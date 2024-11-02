@@ -33,11 +33,30 @@ class TaskListFragment : Fragment() {
         }
 
         binding.buttonAddTask.setOnClickListener {
-            val taskDescription = binding.editTextTask.text.toString()
+            val taskDescription = binding.editTextTask.text.toString().trim()
             if (taskDescription.isNotEmpty()) {
                 viewModel.addTask(taskDescription)
                 binding.editTextTask.text.clear()
             }
+        }
+
+        binding.buttonCompleteSelected.setOnClickListener {
+            val selectedTasks = adapter.getSelectedTasks()
+            if (selectedTasks.isNotEmpty()) {
+                viewModel.completeTasks(selectedTasks)
+            }
+        }
+
+        binding.buttonDeleteSelected.setOnClickListener {
+            val selectedTasks = adapter.getSelectedTasks()
+            if (selectedTasks.isNotEmpty()) {
+                viewModel.deleteTasks(selectedTasks)
+            }
+        }
+
+        binding.buttonCompletedTasks.setOnClickListener {
+            val action = TaskListFragmentDirections.actionTaskListFragmentToCompletedTasksFragment()
+            findNavController().navigate(action)
         }
 
         return binding.root
@@ -49,3 +68,4 @@ class TaskListFragment : Fragment() {
         findNavController().navigate(action)
     }
 }
+

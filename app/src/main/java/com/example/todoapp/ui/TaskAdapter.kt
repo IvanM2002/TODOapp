@@ -11,6 +11,9 @@ class TaskAdapter(
     private val onTaskClick: (TaskEntity) -> Unit
 ) : ListAdapter<TaskEntity, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
+    // Lista para manejar las tareas seleccionadas
+    private val selectedTasks = mutableSetOf<TaskEntity>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val binding = ItemTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TaskViewHolder(binding)
@@ -21,13 +24,21 @@ class TaskAdapter(
         holder.bind(task, onTaskClick)
     }
 
-    class TaskViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun getSelectedTasks(): List<TaskEntity> {
+        return selectedTasks.toList()
+    }
+
+    inner class TaskViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: TaskEntity, onTaskClick: (TaskEntity) -> Unit) {
             binding.textViewTask.text = task.description
-            binding.checkBoxCompleted.isChecked = task.isCompleted
+            binding.checkBoxCompleted.isChecked = selectedTasks.contains(task)
 
             binding.checkBoxCompleted.setOnCheckedChangeListener { _, isChecked ->
-                onTaskClick(task.copy(isCompleted = isChecked))
+                if (isChecked) {
+                    selectedTasks.add(task)
+                } else {
+                    selectedTasks.remove(task)
+                }
             }
 
             binding.root.setOnClickListener {

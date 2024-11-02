@@ -32,6 +32,13 @@ class CompletedTasksFragment : Fragment() {
             adapter.submitList(state.completedTasks)
         }
 
+        binding.buttonDeleteCompletedTasks.setOnClickListener {
+            val selectedTasks = adapter.getSelectedTasks()
+            if (selectedTasks.isNotEmpty()) {
+                viewModel.deleteTasks(selectedTasks)
+            }
+        }
+
         return binding.root
     }
 
@@ -41,3 +48,4 @@ class CompletedTasksFragment : Fragment() {
         findNavController().navigate(action)
     }
 }
+
